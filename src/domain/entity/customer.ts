@@ -1,4 +1,4 @@
-import Address from "./addres";
+import Address from "./address";
 
 export default class Customer{
     private _id: string;
@@ -23,6 +23,10 @@ export default class Customer{
 
     get rewardPoints(): number {
         return this._rewardPoints;
+    }
+
+    get address(): Address {
+        return this._address;
     }
 
     isActive():boolean {
@@ -57,7 +61,7 @@ export default class Customer{
         this._rewardPoints += points;
     }
 
-    set address(address: Address) {
+    changeAddress(address: Address) {
         this._address = address;
     }
 }

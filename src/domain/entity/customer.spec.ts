@@ -1,4 +1,4 @@
-import Address from "./addres";
+import Address from "./address";
 import Customer from "./customer"
 
 describe("Customer unit tests", () => {
@@ -23,7 +23,7 @@ describe("Customer unit tests", () => {
     it("Should activate customer", () => {
         const custumer = new Customer("123", "João");
         const address = new Address("Rua dois", 2, "12345-123", "São Paulo");
-        custumer.address = address;
+        custumer.changeAddress(address);
 
         custumer.activate();
         
