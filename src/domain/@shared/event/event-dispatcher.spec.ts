@@ -1,17 +1,16 @@
-import SendEmailWhenProductIsCreatedHandler from "../product/handler/send-email-when-product-is-created.handler";
+import Customer from '../../customer/entity/customer';
+import CustomerAddressChangedEvent from '../../customer/event/customer-address-changed.event';
+import CustomerCreatedEvent from "../../customer/event/customer-created.event";
+import LogCustomerNewAddressWhenAddressIsChangedHandler from "../../customer/event/handler/log-customer-new-address-when-address-is-changed.handler";
+import Log1WhenCustomerIsCreatedHandler from "../../customer/event/handler/log1-when-customer-is-created.handler";
+import Log2WhenCustomerIsCreatedHandler from "../../customer/event/handler/log2-when-customer-is-created.handler";
+import Address from "../../customer/value-object/address";
+import SendEmailWhenProductIsCreatedHandler from "../../product/event/handler/send-email-when-product-is-created.handler";
+import ProductCreatedEvent from '../../product/event/product-created.event';
 import EventDispatcher from "./event-dispatcher";
-import ProductCreatedEvent from "../product/product-created.event";
-import Log1WhenCustomerIsCreatedHandler from "../customer/handler/log1-when-customer-is-created.handler";
-import Log2WhenCustomerIsCreatedHandler from "../customer/handler/log2-when-customer-is-created.handler";
-import CustomerCreatedEvent from "../customer/customer-created.event";
-import Customer from '../../entity/customer'
-import LogCustomerNewAddressWhenAddressIsChangedHandler from "../customer/handler/log-customer-new-address-when-address-is-changed.handler";
-import Address from "../../entity/address";
-import CustomerAddressChangedEvent from "../customer/customer-address-changed.event";
-
 
 describe('Domain event tests', () => {
-    it('Should register an event handler', ()=> {
+    it('Should register an event handler', () => {
         const eventDispatcher = new EventDispatcher();
         const eventHandler = new SendEmailWhenProductIsCreatedHandler();
 
@@ -37,7 +36,7 @@ describe('Domain event tests', () => {
     });
 
 
-    it('Should unregister an event handler', ()=> {
+    it('Should unregister an event handler', () => {
         const eventDispatcher = new EventDispatcher();
         const eventHandler = new SendEmailWhenProductIsCreatedHandler();
 
@@ -62,14 +61,14 @@ describe('Domain event tests', () => {
         expect(eventDispatcher.getEventHandlers["CustomerCreatedEvent"][0]).toMatchObject(firstEventHandler);
         expect(eventDispatcher.getEventHandlers["CustomerCreatedEvent"][1]).toMatchObject(secondEventHandler);
         expect(eventDispatcher.getEventHandlers["CustomerCreatedEvent"].length).toBe(2);
-    
+
         eventDispatcher.unregister("CustomerCreatedEvent", firstEventHandler);
-    
+
         expect(eventDispatcher.getEventHandlers["CustomerCreatedEvent"]).toBeDefined();
         expect(eventDispatcher.getEventHandlers["CustomerCreatedEvent"].length).toBe(1);
     });
 
-    it('Should unregister all event handlers', ()=> {
+    it('Should unregister all event handlers', () => {
         const eventDispatcher = new EventDispatcher();
         const SendMaileventHandler = new SendEmailWhenProductIsCreatedHandler();
         const firstLogEventHandler = new Log1WhenCustomerIsCreatedHandler();
@@ -124,7 +123,7 @@ describe('Domain event tests', () => {
 
         const customer = new Customer('123', 'Customer 1');
         const customerCreatedEvent = new CustomerCreatedEvent({ customer });
-        
+
         eventDispatcher.notify(customerCreatedEvent);
 
         expect(firstMessageSpyEventHandler).toHaveBeenCalled();
@@ -148,7 +147,7 @@ describe('Domain event tests', () => {
         expect(eventDispatcher.getEventHandlers["CustomerCreatedEvent"][0]).toMatchObject(firstMessageCustomerCreatedEventHandler);
         expect(eventDispatcher.getEventHandlers["CustomerCreatedEvent"][1]).toMatchObject(secondMessageCustomerCreatedEventHandler);
         expect(eventDispatcher.getEventHandlers["CustomerAddressChangedEvent"][0]).toMatchObject(addressChangedEventHandler);
-    
+
         const customer = new Customer('123', 'Customer 1');
         const customerCreatedEvent = new CustomerCreatedEvent({
             customer
@@ -158,7 +157,7 @@ describe('Domain event tests', () => {
         const address = new Address('Rua 1', 2, '12345-678', 'São Paulo');
         customer.changeAddress(address);
 
-        const addressChangedEvent = new CustomerAddressChangedEvent({ 
+        const addressChangedEvent = new CustomerAddressChangedEvent({
             id: customer.id,
             name: customer.name,
             address: customer.address

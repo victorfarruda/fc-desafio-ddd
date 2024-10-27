@@ -1,6 +1,6 @@
-import Address from "./address";
+import Address from "../value-object/address";
 
-export default class Customer{
+export default class Customer {
     private _id: string;
     private _name: string;
     private _address!: Address;
@@ -29,7 +29,7 @@ export default class Customer{
         return this._address;
     }
 
-    isActive():boolean {
+    isActive(): boolean {
         return this._active;
     }
 
@@ -47,7 +47,7 @@ export default class Customer{
     }
 
     activate() {
-        if(this._address === undefined) {
+        if (this._address === undefined) {
             throw new Error("Address is mandatory to active a customer");
         }
         this._active = true;

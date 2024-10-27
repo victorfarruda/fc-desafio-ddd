@@ -1,35 +1,35 @@
 import { Sequelize } from "sequelize-typescript";
 
-import ProductModel from "../db/sequelize/model/product.model";
+import Order from "../../domain/checkout/entity/order";
+import OrderItem from "../../domain/checkout/entity/order_item";
+import Customer from "../../domain/customer/entity/customer";
+import Address from "../../domain/customer/value-object/address";
+import Product from "../../domain/product/entity/product";
+import CustomerModel from "../db/sequelize/model/customer.model";
 import OrderItemModel from "../db/sequelize/model/order-item.model";
 import OrderModel from "../db/sequelize/model/order.model";
-import CustomerModel from "../db/sequelize/model/customer.model";
-import OrderItem from "../../domain/entity/order_item";
-import Order from "../../domain/entity/order";
-import OrderRepository from "./order.repository";
-import Customer from "../../domain/entity/customer";
+import ProductModel from "../db/sequelize/model/product.model";
 import CustomerRepository from "./customer.repository";
-import Address from "../../domain/entity/address";
+import OrderRepository from "./order.repository";
 import ProductRepository from "./product.repository";
-import Product from "../../domain/entity/product";
 
 
 describe("Customer repository test", () => {
-    
+
     let sequelize: Sequelize;
 
-    beforeEach(async() => {
+    beforeEach(async () => {
         sequelize = new Sequelize({
             dialect: 'sqlite',
             storage: ':memory:',
             logging: false,
-            sync: {force: true},
+            sync: { force: true },
         });
         sequelize.addModels([ProductModel, OrderItemModel, OrderModel, CustomerModel]);
         await sequelize.sync();
     });
 
-    afterEach(async() => {
+    afterEach(async () => {
         await sequelize.close();
     });
 
@@ -53,11 +53,11 @@ describe("Customer repository test", () => {
 
         const orderModel = await OrderModel.findOne({
             where: {
-              id: order.id,
+                id: order.id,
             },
             include: ["items"]
-          });
-        
+        });
+
         expect(orderModel.toJSON()).toStrictEqual({
             id: "1",
             customer_id: "123",
@@ -76,7 +76,7 @@ describe("Customer repository test", () => {
     });
 
 
-    it("should update a order",async () => {
+    it("should update a order", async () => {
         const customerRepository = new CustomerRepository();
         const customer = new Customer("123", "Customer 1");
         const address = new Address("Street 1", 1, "Zipcode 1", "City 1");
@@ -95,11 +95,11 @@ describe("Customer repository test", () => {
 
         const orderModel = await OrderModel.findOne({
             where: {
-              id: order.id,
+                id: order.id,
             },
             include: ["items"]
-          });
-        
+        });
+
         expect(orderModel.toJSON()).toStrictEqual({
             id: "1",
             customer_id: "123",
@@ -125,10 +125,10 @@ describe("Customer repository test", () => {
 
         const orderModelUpdated = await OrderModel.findOne({
             where: {
-              id: order.id,
+                id: order.id,
             },
             include: ["items"]
-          });
+        });
 
         expect(orderModelUpdated.toJSON()).toStrictEqual({
             id: "1",
@@ -156,7 +156,7 @@ describe("Customer repository test", () => {
 
     });
 
-    it("should find a order",async () => {
+    it("should find a order", async () => {
         const customerRepository = new CustomerRepository();
         const customer = new Customer("123", "Customer 1");
         const address = new Address("Street 1", 1, "Zipcode 1", "City 1");
@@ -178,15 +178,15 @@ describe("Customer repository test", () => {
         expect(order).toStrictEqual(orderResult);
     });
 
-    it("Should throw an error when order is not found", ()=> {
+    it("Should throw an error when order is not found", () => {
         const orderRepository = new OrderRepository();
 
-        expect(async()=> {
+        expect(async () => {
             await orderRepository.find("123456");
         }).rejects.toThrow("Order not found");
     });
 
-    it("Should find all orders",async () => {
+    it("Should find all orders", async () => {
         const customerRepository = new CustomerRepository();
         const customer1 = new Customer("123", "Customer 1");
         const address1 = new Address("Street 1", 1, "Zipcode 1", "City 1");

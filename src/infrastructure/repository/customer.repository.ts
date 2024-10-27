@@ -1,8 +1,7 @@
-import { where } from "sequelize";
-import CustomerRepositoryInterface from "../../domain/repository/customer-repository.interface"
+import Customer from "../../domain/customer/entity/customer";
+import CustomerRepositoryInterface from "../../domain/customer/repository/customer-repository.interface";
+import Address from "../../domain/customer/value-object/address";
 import CustomerModel from "../db/sequelize/model/customer.model";
-import Customer from "../../domain/entity/customer";
-import Address from "../../domain/entity/address";
 
 export default class CustomerRepository implements CustomerRepositoryInterface {
     async create(entity: Customer): Promise<void> {
@@ -19,27 +18,27 @@ export default class CustomerRepository implements CustomerRepositoryInterface {
     }
     async update(entity: Customer): Promise<void> {
         await CustomerModel.update({
-                name: entity.name,
-                street: entity.address.street,
-                number: entity.address.number,
-                zipcode: entity.address.zip,
-                city: entity.address.city,
-                active: entity.isActive(),
-                rewardPoints: entity.rewardPoints
-            },
+            name: entity.name,
+            street: entity.address.street,
+            number: entity.address.number,
+            zipcode: entity.address.zip,
+            city: entity.address.city,
+            active: entity.isActive(),
+            rewardPoints: entity.rewardPoints
+        },
             {
                 where: {
                     id: entity.id
                 }
             }
         );
-        
+
     }
     async find(id: string): Promise<Customer> {
         let customerModel;
 
         try {
-            customerModel = await CustomerModel.findOne({where: {id}, rejectOnEmpty: true});
+            customerModel = await CustomerModel.findOne({ where: { id }, rejectOnEmpty: true });
         } catch (error) {
             throw new Error("Customer not found");
         }
@@ -67,7 +66,7 @@ export default class CustomerRepository implements CustomerRepositoryInterface {
                 customerModel.city
             );
             customer.changeAddress(address);
-            if(customerModel.active) {
+            if (customerModel.active) {
                 customer.activate();
             }
             return customer;
